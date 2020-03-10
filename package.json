@@ -3,11 +3,19 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "node -r esm ./bin/www",
-    "server": "nodemon ./bin/www"
+    "start": "npm run build && cp config -r dist && node dist/bin/www.js",
+    "server": "nodemon ./bin/www",
+    "build": "babel ./  --ignore 'node_modules/**' -d dist",
+    "dev": "node dist/server.js"
   },
   "dependencies": {
     "apollo-server-express": "^2.9.12",
+    "@babel/cli": "^7.5.5",
+    "@babel/core": "^7.5.5",
+    "@babel/node": "^7.5.5",
+    "@babel/plugin-transform-runtime": "^7.8.3",
+    "@babel/preset-env": "^7.5.5",
+    "@babel/runtime": "^7.8.7",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.4",
     "cookie-parser": "~1.4.4",

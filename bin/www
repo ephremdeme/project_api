@@ -7,29 +7,26 @@
 var express = require("express");
 var debug = require("debug")("server:server");
 const { ApolloServer, gql } = require("apollo-server-express");
-const {resolvers} = require("../graphql/user/userResolver");
-const {  typeDefs } = require("../graphql/user/userSchema");
-const {  schema } = require("../graphql/schema");
-const models = require("../models")
-
-
+const { resolvers } = require("../graphql/user/userResolver");
+const { typeDefs } = require("../graphql/user/userSchema");
+const { schema } = require("../graphql/schema");
+const models = require("../models");
 
 /**
  * Get port from environment and store in Express.
  */
 
-
-const app = express()
+const app = express();
 var port = normalizePort(process.env.PORT || "3000");
-app.set("port", port);
+// app.set("port", port);
 
-app.get("/test", (req, res)=>{
-  models.User.findAll().then(data=> res.json(data))
-  .catch(err=> res.json("error"))
-})
+app.get("/test", (req, res) => {
+  models.User.findAll()
+    .then(data => res.json(data))
+    .catch(err => res.json("error"));
+});
 
 // models.User.findAll({raw : true}).then(data=> console.log(data))
-
 
 /**
  * Create HTTP server.
@@ -37,8 +34,8 @@ app.get("/test", (req, res)=>{
 
 const server = new ApolloServer({
   schema,
-  context : {models},
-  playground:true
+  context: { models },
+  playground: true
 });
 
 server.applyMiddleware({ app });
@@ -47,8 +44,8 @@ server.applyMiddleware({ app });
  * Listen on provided port, on all network interfaces.
  */
 
-app.listen({ port: 5000 }, () =>
-  console.log(`� Server ready at http://localhost:5000${server.graphqlPath}`)
+app.listen(process.env.PORT, () =>
+  console.log(`Server started on port ${process.env.PORT}`)
 );
 app.on("error", onError);
 app.on("listening", onListening);

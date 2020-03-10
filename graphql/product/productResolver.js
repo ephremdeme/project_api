@@ -12,7 +12,7 @@ export const resolvers = {
   Mutation: {
     async createProduct(
       root,
-      { name, description, price, quantity },
+      { name, description, price, quantity, categoryId },
       { models }
     ) {
       return models.Product.create({
@@ -20,12 +20,13 @@ export const resolvers = {
         quantity,
         price,
         description,
+        categoryId,
         userId: 2
       });
     },
     async updateProduct(
       root,
-      { id, name, description, price, quantity },
+      { id, name, description, price, quantity, categoryId },
       { models }
     ) {
       await models.Product.update(
@@ -34,6 +35,7 @@ export const resolvers = {
           quantity,
           price,
           description,
+          categoryId,
           userId: 2
         },
         { where: { id: id } }
@@ -55,6 +57,9 @@ export const resolvers = {
     },
     async comments(product) {
       return product.getComments();
+    },
+    async category(product) {
+      return product.getCategory();
     }
   }
 };

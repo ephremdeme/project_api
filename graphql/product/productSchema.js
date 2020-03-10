@@ -9,6 +9,7 @@ export const typeDefs = gql`
     description: String
     comments: [Comment!]!
     seller: User!
+    category: Category!
   }
 
   extend type Query {
@@ -22,6 +23,7 @@ export const typeDefs = gql`
       price: Float!
       quantity: Int!
       description: String!
+      categoryId: Int!
     ): Product
 
     updateProduct(
@@ -30,6 +32,7 @@ export const typeDefs = gql`
       price: Float!
       quantity: Int!
       description: String!
+      categoryId: Int!
     ): Product
 
     deleteProduct(id: Int!): Product!

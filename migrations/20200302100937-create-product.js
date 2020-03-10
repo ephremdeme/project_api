@@ -28,6 +28,10 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER.UNSIGNED
       },
+      categoryId: {
+        allowNull: false,
+        type: Sequelize.INTEGER.UNSIGNED
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE

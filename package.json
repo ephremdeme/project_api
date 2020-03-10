@@ -3,9 +3,9 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "npm run build && cp config -r dist && node dist/bin/www.js",
+    "start": "npm run build && node dist/bin/www.js",
     "server": "nodemon ./bin/www",
-    "build": "babel src  --ignore 'node_modules/**' -d dist",
+    "build": "babel src  --ignore 'node_modules/**' -d dist --copy-files",
     "dev": "node dist/server.js"
   },
   "dependencies": {

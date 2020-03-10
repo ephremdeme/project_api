@@ -7,8 +7,6 @@
 var express = require("express");
 var debug = require("debug")("server:server");
 const { ApolloServer, gql } = require("apollo-server-express");
-const { resolvers } = require("../graphql/user/userResolver");
-const { typeDefs } = require("../graphql/user/userSchema");
 const { schema } = require("../graphql/schema");
 const models = require("../models");
 

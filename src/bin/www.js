@@ -6,13 +6,19 @@
 
 var express = require("express");
 var debug = require("debug")("server:server");
-const { ApolloServer, gql } = require("apollo-server-express");
-const { schema } = require("../graphql/schema");
+const { ApolloServer } = require("apollo-server-express");
+// const { schema } = require("../graphql/schema");
+
+import { schema } from "../graphql/schema";
+
 const models = require("../models");
 
 /**
  * Get port from environment and store in Express.
  */
+
+
+ console.log("schema \n" + schema);
 
 const app = express();
 var port = normalizePort(process.env.PORT || "3000");

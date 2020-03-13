@@ -13,6 +13,7 @@ export const typeDefs = gql`
 
   extend type Query {
     user(id: Int!): User
+    login(password: String, email: String): User
     users: [User]!
   }
 

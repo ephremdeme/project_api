@@ -1,5 +1,6 @@
-import { gql } from "apollo-server-express";
-
+const fs = require("fs");
+const path = require("path");
+const Rate = require('../../models').Rate
 export const resolvers = {
   Query: {
     async products(root, args, { models }) {
@@ -12,10 +13,17 @@ export const resolvers = {
   Mutation: {
     async createProduct(
       root,
-      { name, description, price, quantity, categoryId },
+      { name, description, price, quantity, categoryId, file },
       { models }
     ) {
-      return models.Product.create({
+      let { createReadStream, filename } = await file;
+      filename = Date.now() + filename;
+      createReadStream().pipe(
+        fs.createWriteStream(
+          path.join(__dirname, "../../../dist/public/images/" + filename)
+        )
+      );
+      const prod = await models.Product.create({
         name,
         quantity,
         price,
@@ -23,6 +31,8 @@ export const resolvers = {
         categoryId,
         userId: 2
       });
+      models.Image.create({ productId: prod.id, filename, userId: 2 });
+      return prod;
     },
     async updateProduct(
       root,
@@ -57,6 +67,21 @@ export const resolvers = {
     },
     async comments(product) {
       return product.getComments();
+    },
+    async images(product) {
+      return product.getImages();
+    },
+    async rating(product) {
+      let data = {
+        rating: await Rate.sum("rating", {
+          where: { productId: product.id }
+        }),
+        count: await Rate.count({
+          where: { productId: product.id }
+        })
+      };
+      data.rating = data.rating / data.count;
+      return data;
     },
     async category(product) {
       return product.getCategory();

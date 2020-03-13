@@ -5,10 +5,10 @@ export const resolvers = {
     async rating(root, { productId }, { models }) {
       let data = {
         rating: await models.Rate.sum("rating", {
-          where: { productId: productId, userId: 2 }
+          where: { productId: productId }
         }),
         count: await models.Rate.count({
-          where: { [Op.and]: [{ productId: productId }, { userId: 2 }] }
+          where: { productId: productId }
         })
       };
       data.rating = data.rating / data.count;

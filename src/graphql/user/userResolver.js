@@ -3,10 +3,21 @@ const bcrypt = require("bcryptjs");
 export const resolvers = {
   Query: {
     async user(root, { id }, { models }) {
-      return models.User.findByPk(id);
+      return models.User.findByPk(id, {
+        attributes: { exclude: ["password"] }
+      });
+    },
+    async login(root, { email, password }, { models }) {
+      return models.User.findOne({
+        where: {
+          email: email,
+          password: await bcrypt.hash(password, 10)
+        },
+        attributes: { exclude: ["password"] }
+      });
     },
     async users(root, args, { models }) {
-      return models.User.findAll();
+      return models.User.findAll({ attributes: { exclude: ["password"] } });
     }
   },
   Mutation: {
@@ -51,11 +62,11 @@ export const resolvers = {
   },
   User: {
     async comments(user) {
-      console.log(user)
+      console.log(user);
       return user.getComments();
     },
-    async products(user){
-      return user.getProducts()
+    async products(user) {
+      return user.getProducts();
     }
   }
 };

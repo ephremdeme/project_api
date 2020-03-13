@@ -11,6 +11,7 @@ module.exports = (sequelize, DataTypes) => {
     User.hasMany(models.Comment);
     User.hasMany(models.Product);
     User.hasMany(models.Rate);
+    User.hasMany(models.Image);
   };
   return User;
 };

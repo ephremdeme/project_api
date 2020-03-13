@@ -1,9 +1,9 @@
 {
   "development": {
-    "username": "sql3327203",
-    "password": "MjpVZrAmYg",
-    "database": "sql3327203",
-    "host": "sql3.freemysqlhosting.net",
+    "username": "root",
+    "password": "root",
+    "database": "gc_project",
+    "host": "127.0.0.1",
     "dialect": "mysql",
     "operatorsAliases": false
   },

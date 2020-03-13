@@ -21,7 +21,7 @@ const models = require("../models");
  console.log("schema \n" + schema);
 
 const app = express();
-var port = normalizePort(process.env.PORT || "3000");
+var port = normalizePort(process.env.PORT || "5000");
 // app.set("port", port);
 
 app.get("/test", (req, res) => {
@@ -48,7 +48,7 @@ server.applyMiddleware({ app });
  * Listen on provided port, on all network interfaces.
  */
 
-app.listen(process.env.PORT, () =>
+app.listen(port , () =>
   console.log(`Server started on port ${process.env.PORT}`)
 );
 app.on("error", onError);

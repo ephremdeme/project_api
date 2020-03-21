@@ -3,13 +3,13 @@ module.exports = (sequelize, DataTypes) => {
   const Rate = sequelize.define(
     "Rate",
     {
-      rating: DataTypes.NUMBER
+      rating: DataTypes.INTEGER
     },
     {}
   );
   Rate.associate = function(models) {
-    Rate.belongsTo(models.Product, { foreignKey: "productId" });
-    Rate.belongsTo(models.User, { foreignKey: "userId" });
+    Rate.belongsTo(models.Product);
+    Rate.belongsTo(models.User);
   };
   return Rate;
 };

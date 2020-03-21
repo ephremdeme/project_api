@@ -4,8 +4,13 @@ export const resolvers = {
     async comment(root, { id }, { models }) {
       return models.Comment.findByPk(id);
     },
-    async comments(root, args, { models }) {
-      return models.Comment.findAll();
+    // async comments(root, args, { models }) {
+    //   return models.Comment.findAll();
+    // },
+    async comments(root, {productId}, { models }) {
+      return models.Comment.findAll({
+        where : { productId: productId}
+      });
     }
   },
   Mutation: {
@@ -16,8 +21,8 @@ export const resolvers = {
     ) {
       return models.Comment.create({
         comment,
-        userId: 1,
-        productId
+        UserId: 2,
+        ProductId: productId
       });
     },
     async updateComment(

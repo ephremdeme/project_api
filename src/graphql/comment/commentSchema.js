@@ -9,7 +9,8 @@ export const typeDefs = gql`
 
   extend type Query {
     comment(id: Int!): Comment!
-    comments: [Comment!]!
+    # comments: [Comment!]!
+    comments(productId: Int): [Comment!]!
   }
 
   extend type Mutation {

@@ -1,6 +1,6 @@
 const fs = require("fs");
 const path = require("path");
-const Rate = require('../../models').Rate
+const Rate = require("../../models").Rate;
 export const resolvers = {
   Query: {
     async products(root, args, { models }) {
@@ -13,7 +13,7 @@ export const resolvers = {
   Mutation: {
     async createProduct(
       root,
-      { name, description, price, quantity, categoryId, file },
+      { name, description, price, quantity, categoryId, subCategoryId, file },
       { models }
     ) {
       let { createReadStream, filename } = await file;
@@ -28,15 +28,16 @@ export const resolvers = {
         quantity,
         price,
         description,
-        categoryId,
-        userId: 2
+        CategoryId: categoryId,
+        SubCategoryId: subCategoryId,
+        UserId: 2
       });
-      models.Image.create({ productId: prod.id, filename, userId: 2 });
+      models.Image.create({ ProductId: prod.id, filename, UserId: 2 });
       return prod;
     },
     async updateProduct(
       root,
-      { id, name, description, price, quantity, categoryId },
+      { id, name, description, price, quantity, subCategoryId, categoryId },
       { models }
     ) {
       await models.Product.update(
@@ -45,8 +46,9 @@ export const resolvers = {
           quantity,
           price,
           description,
-          categoryId,
-          userId: 2
+          CategoryId: categoryId,
+          SubCategoryId: subCategoryId,
+          UserId: 2
         },
         { where: { id: id } }
       );
@@ -85,6 +87,10 @@ export const resolvers = {
     },
     async category(product) {
       return product.getCategory();
-    }
+    },
+    async subCategory(product) {
+      return product.getSubCategory()
+    } 
   }
 };
+   

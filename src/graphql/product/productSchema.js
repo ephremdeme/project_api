@@ -10,6 +10,7 @@ export const typeDefs = gql`
     comments: [Comment!]!
     seller: User!
     category: Category!
+    subCategory: Category!
     images: [Image!]!
     rating: Rate!
   }
@@ -26,6 +27,7 @@ export const typeDefs = gql`
       quantity: Int!
       description: String!
       categoryId: Int!
+      subCategoryId: Int!
       file: Upload!
     ): Product
 
@@ -36,6 +38,7 @@ export const typeDefs = gql`
       quantity: Int!
       description: String!
       categoryId: Int!
+      subCategoryId: Int!
     ): Product
 
     deleteProduct(id: Int!): Product!

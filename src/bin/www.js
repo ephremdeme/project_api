@@ -3,8 +3,6 @@
 /**
  * Module dependencies.
  */
-
-var express = require("express");
 var debug = require("debug")("server:server");
 const { ApolloServer } = require("apollo-server-express");
 // const { schema } = require("../graphql/schema");
@@ -12,29 +10,62 @@ const { ApolloServer } = require("apollo-server-express");
 import { schema } from "../graphql/schema";
 
 const models = require("../models");
+const app = require("../app");
 
 /**
  * Get port from environment and store in Express.
  */
 
-
- console.log("schema \n" + schema);
-
-const app = express();
 var port = normalizePort(process.env.PORT || "5000");
 // app.set("port", port);
 
 app.get("/test", (req, res) => {
-  models.User.findAll()
+  models.Category.findAll({
+    include: [{ model: models.Category, as: "child" }]
+  })
     .then(data => res.json(data))
     .catch(err => res.json("error"));
 });
+
+
+// for (let model of Object.keys(models)) {
+//   if(!models[model].name)
+//     continue;
+
+//   console.log("\n\n----------------------------------\n", 
+//   models[model].name, 
+//   "\n----------------------------------");
+
+//   // console.log("\nAttributes");
+//   // for (let attr of Object.keys(models[model].attributes)) {
+//   //     console.log(models[model].name + '.' + attr);
+//   // }
+
+//   console.log("\nAssociations");
+//   for (let assoc of Object.keys(models[model].associations)) {
+//     for (let accessor of Object.keys(models[model].associations[assoc].accessors)) {
+//       console.log(models[model].name + '.' + models[model].associations[assoc].accessors[accessor]+'()');
+//     }
+//   }
+
+//   // console.log("\nCommon");
+//   // for (let func of Object.keys(models[model].Instance.super_.prototype)) {
+//   //   if(func === 'constructor' || func === 'sequelize')
+//   //     continue;
+//   //   console.log(models[model].name + '.' + func+'()');
+//   // }
+// }
+
+
 
 // models.User.findAll({raw : true}).then(data=> console.log(data))
 
 /**
  * Create HTTP server.
  */
+
+models.sequelize.sync({ alter: true });
+
 
 const server = new ApolloServer({
   schema,
@@ -48,7 +79,7 @@ server.applyMiddleware({ app });
  * Listen on provided port, on all network interfaces.
  */
 
-app.listen(port , () =>
+app.listen(port, () =>
   console.log(`Server started on port ${process.env.PORT}`)
 );
 app.on("error", onError);
@@ -57,6 +88,8 @@ app.on("listening", onListening);
 /**
  * Normalize a port into a number, string, or false.
  */
+
+
 
 function normalizePort(val) {
   var port = parseInt(val, 10);

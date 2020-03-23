@@ -10,7 +10,8 @@ module.exports = (sequelize, DataTypes) => {
   Product.associate = function(models) {
     // associations can be defined here
     Product.belongsTo(models.User)
-    Product.belongsTo(models.Category)
+    Product.belongsTo(models.Category, {as: "Category", foreignKey:"CategoryId"});
+    Product.belongsTo(models.Category, {as: "SubCategory", foreignKey: 'SubCategoryId'} );
     Product.hasMany(models.Comment)
     Product.hasMany(models.Rate)
     Product.hasMany(models.Image);

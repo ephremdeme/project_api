@@ -1,12 +1,14 @@
-
-
 export const resolvers = {
   Query: {
     async category(root, { id }, { models }) {
       return models.Category.findByPk(id);
     },
     async categories(root, args, { models }) {
-      return models.Category.findAll();
+      return models.Category.findAll({
+        where:{
+          parent:null
+        }
+      });
     }
   },
   Mutation: {
@@ -14,6 +16,18 @@ export const resolvers = {
       return models.Category.create({
         category
       });
+    },
+    async createSubCategory(root, { category, categoryId }, { models }) {
+      let sub =await models.Category.create({
+        category,
+        categoryId
+      });
+      models.Category.findByPk(categoryId).then(elec=>{ 
+        elec.addChild(sub);
+      });
+      
+      // console.log(elec.getChilds());
+      return sub;
     },
     async updateCategory(root, { id, category }, { models }) {
       await models.Category.update(
@@ -38,7 +52,13 @@ export const resolvers = {
 
   Category: {
     async products(category) {
-      return category.getProducts();
+      return category.getCategory();
+    },
+    async subProducts(category) {
+      return category.getSubCategory()
+    },
+    async SubCategory(category) {
+      return category.getChild();
     }
   }
 };

@@ -5,6 +5,8 @@ export const typeDefs = gql`
     id: Int
     category: String
     products: [Product!]!
+    subProducts: [Product!]!
+    SubCategory: [Category!]!
   }
 
   extend type Query{
@@ -14,6 +16,7 @@ export const typeDefs = gql`
 
   extend type  Mutation{
       createCategory(category: String!): Category!
+      createSubCategory(category: String!, categoryId: Int): Category!
       updateCategory(id: Int!, category: String!): Category!
       deleteCategory(id: Int!): Category!
   }

@@ -9,7 +9,7 @@
     "dev": "node dist/server.js"
   },
   "dependencies": {
-    "apollo-server-express": "^2.9.12",
+    "apollo-server-express": "^2.14.2",
     "@babel/cli": "^7.5.5",
     "@babel/core": "^7.5.5",
     "@babel/node": "^7.5.5",

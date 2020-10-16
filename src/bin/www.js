@@ -3,11 +3,14 @@
 /**
  * Module dependencies.
  */
+require("dotenv").config();
 var debug = require("debug")("server:server");
 const { ApolloServer } = require("apollo-server-express");
-// const { schema } = require("../graphql/schema");
 
 import { schema } from "../graphql/schema";
+import { validateTokensMiddleware } from "../middleware/validateTokens";
+import { applyMiddleware } from "graphql-middleware";
+const { permissions } = require("../middleware/permissions");
 
 const models = require("../models");
 const app = require("../app");
@@ -16,47 +19,8 @@ const app = require("../app");
  * Get port from environment and store in Express.
  */
 
-var port = normalizePort(process.env.PORT || "5000");
+var port = normalizePort(process.env.PORT || "5001");
 // app.set("port", port);
-
-app.get("/test", (req, res) => {
-  models.Category.findAll({
-    include: [{ model: models.Category, as: "child" }]
-  })
-    .then(data => res.json(data))
-    .catch(err => res.json("error"));
-});
-
-
-// for (let model of Object.keys(models)) {
-//   if(!models[model].name)
-//     continue;
-
-//   console.log("\n\n----------------------------------\n", 
-//   models[model].name, 
-//   "\n----------------------------------");
-
-//   // console.log("\nAttributes");
-//   // for (let attr of Object.keys(models[model].attributes)) {
-//   //     console.log(models[model].name + '.' + attr);
-//   // }
-
-//   console.log("\nAssociations");
-//   for (let assoc of Object.keys(models[model].associations)) {
-//     for (let accessor of Object.keys(models[model].associations[assoc].accessors)) {
-//       console.log(models[model].name + '.' + models[model].associations[assoc].accessors[accessor]+'()');
-//     }
-//   }
-
-//   // console.log("\nCommon");
-//   // for (let func of Object.keys(models[model].Instance.super_.prototype)) {
-//   //   if(func === 'constructor' || func === 'sequelize')
-//   //     continue;
-//   //   console.log(models[model].name + '.' + func+'()');
-//   // }
-// }
-
-
 
 // models.User.findAll({raw : true}).then(data=> console.log(data))
 
@@ -66,11 +30,25 @@ app.get("/test", (req, res) => {
 
 models.sequelize.sync({ alter: true });
 
+app.use(validateTokensMiddleware);
+
+app.use(function (err, req, res, next) {
+  if (err.name === "UnauthorizedError") {
+    res.send({
+      status: 401,
+      message: "Invalid Token.......",
+    });
+  }
+});
 
 const server = new ApolloServer({
-  schema,
-  context: { models },
-  playground: true
+  schema: applyMiddleware(schema, permissions),
+  context: ({ req, res }) => {
+    const user = req.user || null;
+    return { user, models };
+  },
+  introspection: true,
+  playground: true,
 });
 
 server.applyMiddleware({ app });
@@ -89,8 +67,6 @@ app.on("listening", onListening);
  * Normalize a port into a number, string, or false.
  */
 
-
-
 function normalizePort(val) {
   var port = parseInt(val, 10);
 
@@ -106,6 +82,11 @@ function normalizePort(val) {
 
   return false;
 }
+
+process.on("UnauthorizedError", (error) => {
+  console.log("Error is found");
+  console.log(error);
+});
 
 /**
  * Event listener for HTTP server "error" event.
@@ -142,3 +123,31 @@ function onListening() {
   var bind = typeof addr === "string" ? "pipe " + addr : "port " + addr.port;
   debug("Listening on " + bind);
 }
+
+// for (let model of Object.keys(models)) {
+//   if(!models[model].name)
+//     continue;
+
+//   console.log("\n\n----------------------------------\n",
+//   models[model].name,
+//   "\n----------------------------------");
+
+//   // console.log("\nAttributes");
+//   // for (let attr of Object.keys(models[model].attributes)) {
+//   //     console.log(models[model].name + '.' + attr);
+//   // }
+
+//   console.log("\nAssociations");
+//   for (let assoc of Object.keys(models[model].associations)) {
+//     for (let accessor of Object.keys(models[model].associations[assoc].accessors)) {
+//       console.log(models[model].name + '.' + models[model].associations[assoc].accessors[accessor]+'()');
+//     }
+//   }
+
+//   // console.log("\nCommon");
+//   // for (let func of Object.keys(models[model].Instance.super_.prototype)) {
+//   //   if(func === 'constructor' || func === 'sequelize')
+//   //     continue;
+//   //   console.log(models[model].name + '.' + func+'()');
+//   // }
+// }

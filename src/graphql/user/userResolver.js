@@ -1,37 +1,53 @@
 const bcrypt = require("bcryptjs");
+import { setTokens } from "../../helper/setTokens";
 
 export const resolvers = {
   Query: {
     async user(root, { id }, { models }) {
       return models.User.findByPk(id, {
-        attributes: { exclude: ["password"] }
+        attributes: { exclude: ["password"] },
       });
     },
-    async login(root, { email, password }, { models }) {
-      return models.User.findOne({
-        where: {
-          email: email,
-          password: await bcrypt.hash(password, 10)
-        },
-        attributes: { exclude: ["password"] }
+    async getUser(root, args, { models, user }) {
+      return models.User.findByPk(user.id, {
+        attributes: { exclude: ["password"] },
       });
     },
     async users(root, args, { models }) {
       return models.User.findAll({ attributes: { exclude: ["password"] } });
-    }
+    },
   },
   Mutation: {
     async createUser(
       root,
-      { firstName, lastName, email, password },
+      { username, phone, password, first_name, last_name, email },
       { models }
     ) {
-      return models.User.create({
-        firstName,
-        lastName,
-        email,
-        password: await bcrypt.hash(password, 10)
+      const user = await models.User.create({
+        username,
+        phone,
+        password: await bcrypt.hash(password, 10),
       });
+
+      user.password = null;
+
+      const profile = await models.Profile.create({
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        UserId: user.id,
+      });
+
+      // this.login(root, {username, password}, {models})
+
+      const { accessToken, refreshToken } = setTokens(user);
+
+      return {
+        id: user.id,
+        accessToken,
+        refreshToken,
+        User: user,
+      };
     },
     async updateUser(
       root,
@@ -43,7 +59,7 @@ export const resolvers = {
           firstName,
           lastName,
           email,
-          password: await bcrypt.hash(password, 10)
+          password: await bcrypt.hash(password, 10),
         },
         { where: { id: id } }
       );
@@ -51,14 +67,36 @@ export const resolvers = {
       return data;
     },
 
+    async login(root, { username, password }, { models }) {
+      const user = await models.User.findOne({
+        where: { username: username },
+      });
+
+      if (!user) return new Error("user not found");
+
+      const value = await bcrypt.compare(password, user.get().password);
+      if (!value) return new Error("Invalid Credentials");
+      else {
+        user.password = null;
+        const { id } = user;
+        const { accessToken, refreshToken } = setTokens(user);
+        return {
+          id: id,
+          accessToken,
+          refreshToken,
+          User: user,
+        };
+      }
+    },
+
     async deleteUser(root, { id }, { models }) {
       const data = await models.User.findByPk(id);
       models.User.destroy({
-        where: { id: id }
+        where: { id: id },
       });
 
       return data;
-    }
+    },
   },
   User: {
     async comments(user) {
@@ -67,6 +105,9 @@ export const resolvers = {
     },
     async products(user) {
       return user.getProducts();
-    }
-  }
+    },
+    async profile(user) {
+      return user.getProfile();
+    },
+  },
 };

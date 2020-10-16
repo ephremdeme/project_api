@@ -7,10 +7,10 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    rating(productId: Int!): Rate!
+    rating(ProductId: Int!): Rate!
   }
 
   extend type Mutation {
-    rate(rating: Int!, productId: Int!): Rate!
+    rate(rating: Int!, ProductId: Int!): Rate!
   }
 `;

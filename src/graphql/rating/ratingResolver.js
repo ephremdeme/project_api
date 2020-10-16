@@ -2,13 +2,13 @@ const { Op } = require("sequelize");
 
 export const resolvers = {
   Query: {
-    async rating(root, { productId }, { models }) {
+    async rating(root, { ProductId }, { models }) {
       let data = {
         rating: await models.Rate.sum("rating", {
-          where: { productId: productId }
+          where: { ProductId: ProductId }
         }),
         count: await models.Rate.count({
-          where: { productId: productId }
+          where: { ProductId: ProductId }
         })
       };
       data.rating = data.rating / data.count;
@@ -16,18 +16,18 @@ export const resolvers = {
     }
   },
   Mutation: {
-    async rate(root, { productId, rating }, { models }) {
+    async rate(root, { ProductId, rating }, { models }) {
       await models.Rate.create({
         rating,
-        productId,
-        userId: 2
+        ProductId,
+        UserId: 2
       });
       let data = {
         rating: await models.Rate.sum("rating", {
-          where: { productId: productId, userId: 2 }
+          where: { ProductId: ProductId, UserId: 2 }
         }),
         count: await models.Rate.count({
-          where: { [Op.and]: [{ productId: productId }, { userId: 2 }] }
+          where: { [Op.and]: [{ ProductId: ProductId }, { UserId: 2 }] }
         })
       };
       data.rating = data.rating / data.count;

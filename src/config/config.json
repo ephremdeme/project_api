@@ -16,11 +16,6 @@
     "operatorsAliases": false
   },
   "production": {
-    "username": "oqgmeqlbiqqsqx",
-    "password": "a7184250479d10baacc7628073e11bf598807991bd79d1be10734d281870c25f",
-    "database": "dd07pc3vfdplri",  
-    "host": "ec2-34-192-122-0.compute-1.amazonaws.com",
-    "uri": "postgres://oqgmeqlbiqqsqx:a7184250479d10baacc7628073e11bf598807991bd79d1be10734d281870c25f@ec2-34-192-122-0.compute-1.amazonaws.com:5432/dd07pc3vfdplri",
     "dialect": "postgres",
     "use_env_variable": "DATABASE_URL",
     "operatorsAliases": false

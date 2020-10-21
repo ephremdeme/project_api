@@ -15,6 +15,7 @@ module.exports = (sequelize, DataTypes) => {
     Product.hasMany(models.Comment)
     Product.hasMany(models.Rate)
     Product.hasMany(models.Image);
+    Product.belongsToMany(models.Order, {through: 'ProductOrder'})
   };
   return Product;
 };

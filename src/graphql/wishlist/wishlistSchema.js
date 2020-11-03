@@ -8,7 +8,6 @@ export const typeDefs = gql`
 
   type WishlistMutationResponse implements MutationResponse{
     code: String!
-    success: Boolean!
     message: String!
     wishlist: Wishlist
   }

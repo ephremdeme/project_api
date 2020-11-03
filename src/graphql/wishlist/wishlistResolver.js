@@ -30,14 +30,12 @@ export const resolvers = {
           });
           return {
             code: "200",
-            success: true,
             message: "Successfully Created a Wishlist",
             wishlist: wish,
           };
         } catch (error) {
           return {
             code: "400",
-            success: false,
             message: error.message,
             wishlist: null,
           };
@@ -51,14 +49,12 @@ export const resolvers = {
           if(status){
               return {
                   code: "200",
-                  success: true,
                   message: "Successfully Deleted a Wishlist",
                   wishlist: null
               }
           }
           return {
               code: "404",
-              success: false,
               message: "Not Successfully Deleted a Wishlist",
               wishlist: null
           }

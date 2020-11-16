@@ -8,9 +8,11 @@ var debug = require("debug")("server:server");
 const { ApolloServer } = require("apollo-server-express");
 
 import { schema } from "../graphql/schema";
-import { validateTokensMiddleware } from "../middleware/validateTokens";
+import { authMiddleware } from "../middleware/authMiddleware";
 import { applyMiddleware } from "graphql-middleware";
 const { permissions } = require("../middleware/permissions");
+
+const expressJwt = require("express-jwt");
 
 const models = require("../models");
 const app = require("../app");
@@ -28,9 +30,9 @@ var port = normalizePort(process.env.PORT || "5001");
  * Create HTTP server.
  */
 
-models.sequelize.sync({ alter: true });
+// models.sequelize.sync({ alter: true });
 
-app.use(validateTokensMiddleware);
+ app.use(authMiddleware);
 
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {
@@ -41,8 +43,16 @@ app.use(function (err, req, res, next) {
   }
 });
 
+// app.use(
+//   expressJwt({
+//     secret: Buffer.from(process.env.ACESS_TOKEN_SECRET_KEY).toString("base64"),
+//     algorithms: ["HS256"],
+//     credentialsRequired: false,
+//   })
+// );
+
 const server = new ApolloServer({
-  schema: applyMiddleware(schema, permissions),
+  schema: applyMiddleware(schema),
   context: ({ req, res }) => {
     const user = req.user || null;
     return { user, models };

@@ -43,9 +43,8 @@ export const resolvers = {
       const { accessToken, refreshToken } = setTokens(user);
 
       return {
-        id: user.id,
-        accessToken,
-        refreshToken,
+        id: id,
+        token: accessToken,
         User: user,
       };
     },
@@ -82,8 +81,7 @@ export const resolvers = {
         const { accessToken, refreshToken } = setTokens(user);
         return {
           id: id,
-          accessToken,
-          refreshToken,
+          token: accessToken,
           User: user,
         };
       }

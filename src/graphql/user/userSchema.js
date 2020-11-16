@@ -13,8 +13,7 @@ export const typeDefs = gql`
 
   type AuthData {
     id: Int
-    accessToken: String!
-    refreshToken: String!
+    token: String!
     User: User!
   }
 

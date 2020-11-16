@@ -3,7 +3,7 @@ import { sign } from "jsonwebtoken";
 
 export function setTokens(user) {
   const sevenDays = 60 * 60 * 24 * 7 * 1000;
-  const fifteenMins = 60 * 15 * 1000;
+  const oneDay = 24 * 60 * 60 * 1000;
   const accessUser = {
     id: user.id,
   };
@@ -11,7 +11,7 @@ export function setTokens(user) {
     { user: accessUser },
     Buffer.from(process.env.ACESS_TOKEN_SECRET_KEY).toString('base64'),
     {
-      expiresIn: fifteenMins,
+      expiresIn: oneDay,
     }
   );
   const refreshUser = {

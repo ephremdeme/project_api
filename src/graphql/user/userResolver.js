@@ -43,7 +43,7 @@ export const resolvers = {
       const { accessToken, refreshToken } = setTokens(user);
 
       return {
-        id: id,
+        id: user.id,
         token: accessToken,
         User: user,
       };

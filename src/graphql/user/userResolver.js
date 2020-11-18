@@ -13,6 +13,13 @@ export const resolvers = {
         attributes: { exclude: ["password"] },
       });
     },
+    async getSuspendedUsers(root, args, { models }) {
+      return models.User.findAll({
+        where: {
+          status: false,
+        },
+      });
+    },
     async users(root, args, { models }) {
       return models.User.findAll({ attributes: { exclude: ["password"] } });
     },
@@ -59,6 +66,26 @@ export const resolvers = {
           lastName,
           email,
           password: await bcrypt.hash(password, 10),
+        },
+        { where: { id: id } }
+      );
+      const data = await models.User.findByPk(id);
+      return data;
+    },
+    async suspendUser(root, { id }, { models }) {
+      await models.User.update(
+        {
+          status: false,
+        },
+        { where: { id: id } }
+      );
+      const data = await models.User.findByPk(id);
+      return data;
+    },
+    async unSuspendUser(root, { id }, { models }) {
+      await models.User.update(
+        {
+          status: true,
         },
         { where: { id: id } }
       );

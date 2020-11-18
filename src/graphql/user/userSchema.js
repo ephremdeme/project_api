@@ -5,6 +5,7 @@ export const typeDefs = gql`
     id: Int
     username: String
     phone: String
+    status: Boolean
     password: String
     comments: [Comment!]!
     products: [Product!]!
@@ -21,6 +22,7 @@ export const typeDefs = gql`
     user(id: Int!): User
     getUser: User!
     users: [User]!
+    getSuspendedUsers: [User]!
   }
 
   type Mutation {
@@ -35,8 +37,12 @@ export const typeDefs = gql`
 
     login(password: String, username: String): AuthData
 
-
     deleteUser(id: Int!): User!
+
+    suspendUser(id: Int!): User!
+
+    unSuspendUser(id: Int!): User!
+
     updateUser(
       id: Int!
       firstName: String!

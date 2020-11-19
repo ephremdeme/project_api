@@ -30,7 +30,7 @@ var port = normalizePort(process.env.PORT || "5001");
  * Create HTTP server.
  */
 
-// models.sequelize.sync({ alter: true });
+models.sequelize.sync({ alter: true });
 
 app.use(authMiddleware);
 

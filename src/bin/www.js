@@ -32,7 +32,7 @@ var port = normalizePort(process.env.PORT || "5001");
 
 // models.sequelize.sync({ alter: true });
 
- app.use(authMiddleware);
+app.use(authMiddleware);
 
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {

@@ -32,7 +32,7 @@ export const typeDefs = gql`
       password: String!
       first_name: String!
       last_name: String!
-      email: String!
+      email: String
     ): AuthData
 
     login(password: String, username: String): AuthData
@@ -45,10 +45,10 @@ export const typeDefs = gql`
 
     updateUser(
       id: Int!
-      firstName: String!
-      lastName: String!
-      email: String!
-      password: String!
+      firstName: String
+      lastName: String
+      email: String
+      password: String
     ): User!
   }
 `;

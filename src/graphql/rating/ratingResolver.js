@@ -5,33 +5,33 @@ export const resolvers = {
     async rating(root, { ProductId }, { models }) {
       let data = {
         rating: await models.Rate.sum("rating", {
-          where: { ProductId: ProductId }
+          where: { ProductId: ProductId },
         }),
         count: await models.Rate.count({
-          where: { ProductId: ProductId }
-        })
+          where: { ProductId: ProductId },
+        }),
       };
       data.rating = data.rating / data.count;
       return data;
-    }
+    },
   },
   Mutation: {
-    async rate(root, { ProductId, rating }, { models }) {
+    async rate(root, { ProductId, rating }, { models, user }) {
       await models.Rate.create({
         rating,
         ProductId,
-        UserId: 2
+        UserId: user.id,
       });
       let data = {
         rating: await models.Rate.sum("rating", {
-          where: { ProductId: ProductId, UserId: 2 }
+          where: { ProductId: ProductId, UserId: user.id },
         }),
         count: await models.Rate.count({
-          where: { [Op.and]: [{ ProductId: ProductId }, { UserId: 2 }] }
-        })
+          where: { [Op.and]: [{ ProductId: ProductId }, { UserId: user.id }] },
+        }),
       };
       data.rating = data.rating / data.count;
       return data;
-    }
-  }
+    },
+  },
 };

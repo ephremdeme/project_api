@@ -4,8 +4,10 @@ export const typeDefs = gql`
   type Product {
     id: Int
     name: String
+    model: String
     price: Float
     quantity: Int
+    views: Int
     description: String
     comments: [Comment!]!
     seller: User!
@@ -17,6 +19,7 @@ export const typeDefs = gql`
 
   extend type Query {
     products: [Product!]!
+    popularProducts: [Product!]!
     product(id: Int): Product
   }
 
@@ -28,7 +31,8 @@ export const typeDefs = gql`
       description: String!
       categoryId: Int!
       subCategoryId: Int!
-      file: Upload!
+      images: [Upload!]
+      file_3d: Upload!
     ): Product
 
     updateProduct(
@@ -39,6 +43,8 @@ export const typeDefs = gql`
       description: String!
       categoryId: Int!
       subCategoryId: Int!
+      images: [Upload]
+      file_3d: Upload
     ): Product
 
     deleteProduct(id: Int!): Product!

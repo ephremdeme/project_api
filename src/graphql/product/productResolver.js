@@ -1,10 +1,21 @@
 const fs = require("fs");
 const path = require("path");
 const Rate = require("../../models").Rate;
+
+let dir = path.join(__dirname, "../../../dist/public/products/");
+
 export const resolvers = {
   Query: {
-    async products(root, args, { models }) {
-      return await models.Product.findAll();
+    async products(root, { offset, limit }, { models }) {
+      let products = await models.Product.findAndCountAll({
+        limit: limit,
+        offset: offset,
+      });
+
+      return {
+        count: products.count,
+        products: products.rows,
+      };
     },
     async product(root, { id }, { models }) {
       let product = await models.Product.findByPk(id);
@@ -13,10 +24,17 @@ export const resolvers = {
       return product;
     },
 
-    async popularProducts(root, args, { models }) {
-      return await models.Product.findAll({
+    async popularProducts(root, { offset, limit }, { models }) {
+      let products = await models.Product.findAll({
+        limit: limit,
+        offset: offset,
         order: [["views", "DESC"]],
       });
+
+      return {
+        count: products.count,
+        products: products.rows,
+      };
     },
   },
   Mutation: {
@@ -34,18 +52,14 @@ export const resolvers = {
       },
       { models }
     ) {
+      if (images.length > 5) {
+        images = images.slice(0, 5);
+      }
       let res = await Promise.all(images)
         .then(async (datas) => {
           let { createReadStream, filename } = await file_3d;
           filename = Date.now() + filename;
-          createReadStream().pipe(
-            fs.createWriteStream(
-              path.join(
-                __dirname,
-                "../../../dist/public/images/products/" + filename
-              )
-            )
-          );
+
           const prod = await models.Product.create({
             name,
             quantity,
@@ -54,36 +68,53 @@ export const resolvers = {
             model: filename,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
-            UserId: 6,
+            UserId: 3,
           });
 
-          let imagesData = [];
+          await fs.promises.mkdir(
+            path.join(dir, String(prod.id) + "/images/"),
+            {
+              recursive: true,
+            }
+          );
+          await fs.promises.mkdir(
+            path.join(dir, String(prod.id) + "/models/"),
+            {
+              recursive: true,
+            }
+          );
 
-          datas.map(async (file) => {
+          createReadStream().pipe(
+            fs.createWriteStream(
+              path.join(dir, String(prod.id) + "/models/" + filename)
+            )
+          );
+
+          let allImages = datas.map((file) => {
             let { createReadStream, filename } = file;
+            filename = Date.now() + filename;
 
             createReadStream().pipe(
               fs.createWriteStream(
-                path.join(
-                  __dirname,
-                  "../../../dist/public/images/products/" + filename
-                )
+                path.join(dir, String(prod.id) + "/images/" + filename)
               )
             );
 
-            imagesData.push({
+            return {
               ProductId: prod.id,
               filename,
-              UserId: 2,
-            });
-
-            await models.Image.bulkCreate(imagesData);
+              UserId: 3,
+            };
           });
+          console.log("Images", allImages);
+
+          await models.Image.bulkCreate(allImages);
+
           return prod;
         })
         .then((prod) => prod)
         .catch((err) => {
-          return new Error("An Error Occured while uploading images");
+          return err;
         });
       return res;
     },
@@ -103,14 +134,17 @@ export const resolvers = {
       { models }
     ) {
       let modleName;
+
+      if (images.length > 5) {
+        images = images.slice(0, 5);
+        console.log(images);
+      }
+
       file_3d?.then(async ({ createReadStream, filename }) => {
         modleName = Date.now() + filename;
         createReadStream().pipe(
           fs.createWriteStream(
-            path.join(
-              __dirname,
-              "../../../dist/public/images/products/" + modleName
-            )
+            path.join(dir, String(id) + "/models/" + filename)
           )
         );
 
@@ -123,7 +157,7 @@ export const resolvers = {
             model: modleName,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
-            UserId: 6,
+            UserId: 3,
           },
           { where: { id: id } }
         );
@@ -137,7 +171,7 @@ export const resolvers = {
             description,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
-            UserId: 6,
+            UserId: 3,
           },
           { where: { id: id } }
         );
@@ -152,17 +186,14 @@ export const resolvers = {
 
               createReadStream().pipe(
                 fs.createWriteStream(
-                  path.join(
-                    __dirname,
-                    "../../../dist/public/images/products/" + filename
-                  )
+                  path.join(dir, String(id) + "/images/" + filename)
                 )
               );
 
               imagesData.push({
                 ProductId: id,
                 filename,
-                UserId: 2,
+                UserId: 3,
               });
             });
 
@@ -187,9 +218,15 @@ export const resolvers = {
     },
     async deleteProduct(root, { id }, { models }) {
       const data = await models.Product.findByPk(id);
-      models.Product.destroy({
+      let res = await models.Product.destroy({
         where: { id: id },
       });
+
+      if (res && fs.existsSync(path.join(dir, String(id)))) {
+        await fs.promises.rmdir(path.join(dir, String(id)), {
+          recursive: true,
+        });
+      }
       return data;
     },
   },

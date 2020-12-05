@@ -17,9 +17,14 @@ export const typeDefs = gql`
     rating: Rate!
   }
 
-  extend type Query {
+  type PaginatedProducts {
+    count: Int
     products: [Product!]!
-    popularProducts: [Product!]!
+  }
+
+  extend type Query {
+    products(offset: Int, limit: Int): PaginatedProducts!
+    popularProducts(offset: Int, limit: Int): PaginatedProducts!
     product(id: Int): Product
   }
 

@@ -5,12 +5,18 @@ export const typeDefs = gql`
     id: Int
     comment: String
     user: User!
+    rating: Rate
+  }
+
+  type PaginatedComments {
+    count: Int
+    comments: [Comment!]!
   }
 
   extend type Query {
     comment(id: Int!): Comment!
     # comments: [Comment!]!
-    comments(productId: Int): [Comment!]!
+    comments(productId: Int, offset: Int, limit: Int): PaginatedComments
   }
 
   extend type Mutation {

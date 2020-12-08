@@ -6,10 +6,15 @@ let dir = path.join(__dirname, "../../../dist/public/products/");
 
 export const resolvers = {
   Query: {
-    async products(root, { offset, limit }, { models }) {
+    async products(root, { offset, limit, by_date, by_sold }, { models }) {
       let products = await models.Product.findAndCountAll({
         limit: limit,
         offset: offset,
+        order: by_date
+          ? [["createdAt", "DESC"]]
+          : by_sold
+          ? [["sold", "DESC"]]
+          : null,
       });
 
       return {
@@ -25,7 +30,7 @@ export const resolvers = {
     },
 
     async popularProducts(root, { offset, limit }, { models }) {
-      let products = await models.Product.findAll({
+      let products = await models.Product.findAndCountAll({
         limit: limit,
         offset: offset,
         order: [["views", "DESC"]],
@@ -42,7 +47,8 @@ export const resolvers = {
       root,
       {
         name,
-        description,
+        shortDescription,
+        fullDescription,
         price,
         quantity,
         categoryId,
@@ -64,7 +70,8 @@ export const resolvers = {
             name,
             quantity,
             price,
-            description,
+            shortDescription,
+            fullDescription,
             model: filename,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
@@ -123,7 +130,8 @@ export const resolvers = {
       {
         id,
         name,
-        description,
+        shortDescription,
+        fullDescription,
         price,
         quantity,
         subCategoryId,
@@ -137,7 +145,6 @@ export const resolvers = {
 
       if (images.length > 5) {
         images = images.slice(0, 5);
-        console.log(images);
       }
 
       file_3d?.then(async ({ createReadStream, filename }) => {
@@ -153,7 +160,8 @@ export const resolvers = {
             name,
             quantity,
             price,
-            description,
+            shortDescription,
+            fullDescription,
             model: modleName,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
@@ -168,7 +176,8 @@ export const resolvers = {
             name,
             quantity,
             price,
-            description,
+            shortDescription,
+            fullDescription,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
             UserId: 3,

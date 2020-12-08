@@ -6,9 +6,11 @@ export const typeDefs = gql`
     name: String
     model: String
     price: Float
+    sold: Int
     quantity: Int
     views: Int
-    description: String
+    shortDescription: String
+    fullDescription: String
     comments: [Comment!]!
     seller: User!
     category: Category!
@@ -23,7 +25,12 @@ export const typeDefs = gql`
   }
 
   extend type Query {
-    products(offset: Int, limit: Int): PaginatedProducts!
+    products(
+      offset: Int
+      limit: Int
+      by_date: Boolean
+      by_sold: Boolean
+    ): PaginatedProducts!
     popularProducts(offset: Int, limit: Int): PaginatedProducts!
     product(id: Int): Product
   }
@@ -33,7 +40,8 @@ export const typeDefs = gql`
       name: String!
       price: Float!
       quantity: Int!
-      description: String!
+      shortDescription: String!
+      fullDescription: String!
       categoryId: Int!
       subCategoryId: Int!
       images: [Upload!]
@@ -45,7 +53,8 @@ export const typeDefs = gql`
       name: String!
       price: Float!
       quantity: Int!
-      description: String!
+      shortDescription: String!
+      fullDescription: String!
       categoryId: Int!
       subCategoryId: Int!
       images: [Upload]

@@ -3,14 +3,15 @@ module.exports = (sequelize, DataTypes) => {
   const Comment = sequelize.define(
     "Comment",
     {
-      comment: DataTypes.STRING
+      comment: { type: DataTypes.STRING, allowNull: false },
     },
     {}
   );
-  Comment.associate = function(models) {
+  Comment.associate = function (models) {
     // associations can be defined here
     Comment.belongsTo(models.User);
     Comment.belongsTo(models.Product);
+    Comment.hasOne(models.Rate);
   };
   return Comment;
 };

@@ -3,10 +3,15 @@ module.exports = (sequelize, DataTypes) => {
   const User = sequelize.define(
     "User",
     {
-      username: DataTypes.STRING,
-      phone: DataTypes.STRING,
+      username: { type: DataTypes.STRING, allowNull: false },
+
+      phone: {
+        allowNull: false,
+        type: DataTypes.STRING,
+        unique: true,
+      },
       status: { type: DataTypes.BOOLEAN, defaultValue: true },
-      password: DataTypes.STRING,
+      password: { type: DataTypes.STRING, allowNull: false },
       tokenCount: { type: DataTypes.INTEGER, defaultValue: 0 },
     },
     {}
@@ -15,9 +20,10 @@ module.exports = (sequelize, DataTypes) => {
     // associations can be defined here
     User.hasMany(models.Comment);
     User.hasMany(models.Product);
-    User.hasMany(models.Rate);
-    User.hasOne(models.Cart);
+    User.hasOne(models.Rate);
+    User.hasOne(models.Order);
     User.hasOne(models.Profile);
+    User.belongsToMany(models.Role, { through: "UserRoles" });
   };
   return User;
 };

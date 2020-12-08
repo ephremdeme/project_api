@@ -6,7 +6,7 @@ export const typeDefs = gql`
     product: Product!
   }
 
-  type WishlistMutationResponse implements MutationResponse{
+  type WishlistMutationResponse implements MutationResponse {
     code: String!
     message: String!
     wishlist: Wishlist
@@ -17,8 +17,9 @@ export const typeDefs = gql`
     wishlist(id: Int): Wishlist
   }
 
-  extend type Mutation{
-      createWishlist(productId: Int!): WishlistMutationResponse!
-      deleteWishlist(id: Int!): WishlistMutationResponse!
+  extend type Mutation {
+    createWishlist(productId: Int!): WishlistMutationResponse!
+    deleteWishlist(productId: Int!): WishlistMutationResponse!
+    deleteAllWishlist: WishlistMutationResponse!
   }
 `;

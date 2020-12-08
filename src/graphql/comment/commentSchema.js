@@ -20,7 +20,7 @@ export const typeDefs = gql`
   }
 
   extend type Mutation {
-    createComment(comment: String!, productId: Int): Comment
+    createComment(comment: String!, productId: Int, rating: Int!): Comment
     deleteComment(id: Int!): Comment!
     updateComment(id: Int!, comment: String!): Comment!
   }

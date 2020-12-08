@@ -18,12 +18,23 @@ export const resolvers = {
     },
   },
   Mutation: {
-    async createComment(root, { comment, productId }, { models, user }) {
-      return models.Comment.create({
-        comment,
+    async createComment(
+      root,
+      { comment, productId, rating },
+      { models, user }
+    ) {
+      let commentRes = await models.Comment.create({
+        comment: comment,
         UserId: user.id,
         ProductId: productId,
       });
+      let rate = await models.Rate.create({
+        rating: rating,
+        UserId: user.id,
+        CommentId: commentRes.id,
+        ProductId: productId,
+      });
+      return commentRes;
     },
     async updateComment(root, { id, comment }, { models }) {
       await models.Comment.update(

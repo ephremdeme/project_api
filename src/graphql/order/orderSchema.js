@@ -10,6 +10,17 @@ export const typeDefs = gql`
     products: [Product!]
   }
 
+  input Item {
+    id: Int!
+    quantity: Int!
+  }
+
+  input OrderInput {
+    products: [Item]!
+    pin: Int!
+    sellerPhone: String!
+  }
+
   type OrderMutationResponse implements MutationResponse {
     code: String!
     message: String!
@@ -22,10 +33,6 @@ export const typeDefs = gql`
   }
 
   extend type Mutation {
-    createOrder(
-      subTotalPrice: Float!
-      totalPrice: Float!
-      ProductId: Int!
-    ): OrderMutationResponse!
+    createOrder(orders: OrderInput!): OrderMutationResponse!
   }
 `;

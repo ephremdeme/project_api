@@ -10,6 +10,12 @@ export const typeDefs = gql`
     comments: [Comment!]!
     products: [Product!]!
     profile: Profile
+    role: Role
+  }
+
+  type Role {
+    id: Int!
+    role: String!
   }
 
   type AuthData {
@@ -27,7 +33,7 @@ export const typeDefs = gql`
 
   type Mutation {
     createUser(
-      username: String!
+      username: String
       phone: String!
       password: String!
       first_name: String!
@@ -35,7 +41,7 @@ export const typeDefs = gql`
       email: String
     ): AuthData
 
-    login(password: String, username: String): AuthData
+    login(password: String, phone: String): AuthData
 
     deleteUser(id: Int!): User!
 

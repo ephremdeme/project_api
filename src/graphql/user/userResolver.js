@@ -1,11 +1,13 @@
 const bcrypt = require("bcryptjs");
 import { setTokens } from "../../helper/setTokens";
+import role from "../../models/role";
 
 export const resolvers = {
   Query: {
     async user(root, { id }, { models }) {
       return models.User.findByPk(id, {
         attributes: { exclude: ["password"] },
+        include: "Role",
       });
     },
     async getUser(root, args, { models, user }) {
@@ -93,9 +95,9 @@ export const resolvers = {
       return data;
     },
 
-    async login(root, { username, password }, { models }) {
+    async login(root, { phone, password }, { models }) {
       const user = await models.User.findOne({
-        where: { username: username },
+        where: { phone: phone },
       });
 
       if (!user) return new Error("user not found");
@@ -133,6 +135,9 @@ export const resolvers = {
     },
     async profile(user) {
       return user.getProfile();
+    },
+    async role(user) {
+      user.getRoles();
     },
   },
 };

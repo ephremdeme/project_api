@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "start": "npm run build && node dist/bin/www.js",
-    "server": "nodemon ./bin/www",
+    "server": "node ./src/bin/www",
     "build": "babel src  --ignore 'node_modules/**' -d dist --copy-files",
     "dev": "node dist/server.js"
   },
@@ -16,6 +16,7 @@
     "@babel/preset-env": "^7.5.5",
     "@babel/runtime": "^7.8.7",
     "apollo-server-express": "^2.14.2",
+    "axios": "^0.21.0",
     "bcryptjs": "^2.4.3",
     "config": "^3.2.4",
     "cookie-parser": "~1.4.4",
@@ -25,6 +26,7 @@
     "express": "^4.16.4",
     "express-graphql": "^0.9.0",
     "express-jwt": "^6.0.0",
+    "generate-pincode": "^5.0.3",
     "graphql": "^14.5.8",
     "graphql-middleware": "^4.0.2",
     "graphql-shield": "^7.3.3",
@@ -44,6 +46,6 @@
     "sequelize-cli": "^5.5.1"
   },
   "engines": {
-    "node": "10.16.3"
+    "node": "12.18.3"
   }
 }

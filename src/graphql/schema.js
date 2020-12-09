@@ -33,14 +33,25 @@ const Query = `
 
 const resolvers = {
   MutationResponse: {
-    __resolveType(mutationResponse, context, info){
+    __resolveType(mutationResponse, context, info) {
       return null;
     },
   },
 };
 
 export const schema = makeExecutableSchema({
-  typeDefs: [Query, User, Comment, Order, Product, Wishlist, Profile, Rate, Category, Image],
+  typeDefs: [
+    Query,
+    User,
+    Comment,
+    Order,
+    Product,
+    Wishlist,
+    Profile,
+    Rate,
+    Category,
+    Image,
+  ],
   resolvers: [
     resolvers,
     userResolver,

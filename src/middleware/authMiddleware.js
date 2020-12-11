@@ -25,7 +25,6 @@ module.exports.authMiddleware = (req, res, next) => {
     );
 
     req.user = decodeToken.user;
-    console.log(decodeToken);
   } catch (error) {
     // return new Error("Invalid Tokens");
     return next()

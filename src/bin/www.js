@@ -32,7 +32,7 @@ var port = normalizePort(process.env.PORT || "5001");
 
 models.sequelize.sync({ alter: true });
 
-app.use(authMiddleware);
+// app.use(authMiddleware);
 
 app.use(function (err, req, res, next) {
   if (err.name === "UnauthorizedError") {
@@ -43,18 +43,19 @@ app.use(function (err, req, res, next) {
   }
 });
 
-// app.use(
-//   expressJwt({
-//     secret: Buffer.from(process.env.ACESS_TOKEN_SECRET_KEY).toString("base64"),
-//     algorithms: ["HS256"],
-//     credentialsRequired: false,
-//   })
-// );
+app.use(
+  expressJwt({
+    secret: Buffer.from(process.env.ACESS_TOKEN_SECRET_KEY).toString("base64"),
+    algorithms: ["HS256"],
+    credentialsRequired: false,
+  })
+);
 
 const server = new ApolloServer({
-  schema: applyMiddleware(schema),
+  schema: applyMiddleware(schema, permissions),
   context: ({ req, res }) => {
-    const user = req.user || null;
+    const user = req?.user?.user || null;
+    console.log(req.user);
     return { user, models };
   },
   introspection: true,
@@ -68,7 +69,7 @@ server.applyMiddleware({ app });
  */
 
 app.listen(port, () =>
-  console.log(`Server started on port ${process.env.PORT}`)
+  console.log(`🚀 Server ready on port : ${process.env.PORT}`)
 );
 app.on("error", onError);
 app.on("listening", onListening);

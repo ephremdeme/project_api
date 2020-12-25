@@ -4,27 +4,20 @@ const isAuthenticated = rule()((parent, args, { user }) => {
   return user !== null;
 });
 
-
-const isAdmin = rule()( async (parent, args, { user, models }) => {
-  admin = await models.User.findOne({
-    where: {
-      id: user.id,
-    },
-    include: models.Role,
-  });
-
-  return true
+const isAdmin = rule()((parent, args, { user, models }) => {
+  return user.roles.some((role) => role == "Admin");
+});
+const isOperator = rule()((parent, args, { user, models }) => {
+  return user.roles.some((role) => role == "Operator");
 });
 
-
-
-const isCommentOwner = rule()(async (parent, args, { models, user }) => {
-  let comment = await models.Comment.findOne({
-    where : {
-      UserId : user.id
-    }
-  })
-  return comment!=null;
+const isCommentOwner = rule()((parent, args, { models, user }) => {
+  let comment = models.Comment.findOne({
+    where: {
+      UserId: user.id,
+    },
+  });
+  return comment != null;
 });
 
 const permissions = shield({
@@ -35,8 +28,11 @@ const permissions = shield({
 
   Mutation: {
     "*": isAuthenticated,
-    deleteComment : or(isCommentOwner, isAdmin),
-    updateComment : isCommentOwner,
+    deleteComment: or(isAuthenticated, isOperator, isAdmin),
+    createOperator: isAdmin,
+    updateComment: or(isAdmin, isAuthenticated),
+    suspendUser: or(isOperator, isAdmin),
+    unSuspendUser: or(isOperator, isAdmin),
     createUser: allow,
     login: allow,
   },

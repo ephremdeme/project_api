@@ -56,7 +56,7 @@ export const resolvers = {
         file_3d,
         images,
       },
-      { models }
+      { models, user }
     ) {
       if (images.length > 5) {
         images = images.slice(0, 5);
@@ -75,7 +75,7 @@ export const resolvers = {
             model: filename,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
-            UserId: 3,
+            UserId: user.id,
           });
 
           await fs.promises.mkdir(
@@ -110,7 +110,7 @@ export const resolvers = {
             return {
               ProductId: prod.id,
               filename,
-              UserId: 3,
+              UserId: user.id,
             };
           });
           console.log("Images", allImages);
@@ -165,7 +165,7 @@ export const resolvers = {
             model: modleName,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
-            UserId: 3,
+            UserId: user.id,
           },
           { where: { id: id } }
         );
@@ -180,7 +180,7 @@ export const resolvers = {
             fullDescription,
             CategoryId: categoryId,
             SubCategoryId: subCategoryId,
-            UserId: 3,
+            UserId: user.id,
           },
           { where: { id: id } }
         );
@@ -202,7 +202,7 @@ export const resolvers = {
               imagesData.push({
                 ProductId: id,
                 filename,
-                UserId: 3,
+                UserId: user.id,
               });
             });
 
@@ -277,6 +277,6 @@ export const resolvers = {
 //   description,
 //   CategoryId: categoryId,
 //   SubCategoryId: subCategoryId,
-//   UserId: 2,
+//   UserId: user.id,
 // });
 // models.Image.create({ ProductId: prod.id, filename, UserId: 2 });

@@ -38,6 +38,12 @@ export const resolvers = {
         password: await bcrypt.hash(password, 10),
       });
 
+      let role = await models.Role.create({
+        role: "User",
+      });
+
+      user.addRole(role);
+
       user.password = null;
 
       const profile = await models.Profile.create({
@@ -49,7 +55,43 @@ export const resolvers = {
 
       // this.login(root, {username, password}, {models})
 
-      const { accessToken, refreshToken } = setTokens(user);
+      const { accessToken, refreshToken } = await setTokens(user);
+
+      return {
+        id: user.id,
+        token: accessToken,
+        User: user,
+      };
+    },
+    async createOperator(
+      root,
+      { username, phone, password, first_name, last_name, email },
+      { models }
+    ) {
+      const user = await models.User.create({
+        username,
+        phone,
+        password: await bcrypt.hash(password, 10),
+      });
+
+      let role = await models.Role.create({
+        role: "Operator",
+      });
+
+      user.addRole(role);
+
+      user.password = null;
+
+      const profile = await models.Profile.create({
+        first_name: first_name,
+        last_name: last_name,
+        email: email,
+        UserId: user.id,
+      });
+
+      // this.login(root, {username, password}, {models})
+
+      const { accessToken, refreshToken } = await setTokens(user);
 
       return {
         id: user.id,
@@ -107,7 +149,7 @@ export const resolvers = {
       else {
         user.password = null;
         const { id } = user;
-        const { accessToken, refreshToken } = setTokens(user);
+        const { accessToken, refreshToken } = await setTokens(user);
         return {
           id: id,
           token: accessToken,
@@ -127,7 +169,6 @@ export const resolvers = {
   },
   User: {
     async comments(user) {
-      console.log(user);
       return user.getComments();
     },
     async products(user) {
@@ -137,7 +178,7 @@ export const resolvers = {
       return user.getProfile();
     },
     async role(user) {
-      user.getRoles();
+      return user.getRoles();
     },
   },
 };

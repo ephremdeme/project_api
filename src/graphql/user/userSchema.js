@@ -10,7 +10,7 @@ export const typeDefs = gql`
     comments: [Comment!]!
     products: [Product!]!
     profile: Profile
-    role: Role
+    role: [Role]!
   }
 
   type Role {
@@ -33,6 +33,15 @@ export const typeDefs = gql`
 
   type Mutation {
     createUser(
+      username: String
+      phone: String!
+      password: String!
+      first_name: String!
+      last_name: String!
+      email: String
+    ): AuthData
+
+    createOperator(
       username: String
       phone: String!
       password: String!

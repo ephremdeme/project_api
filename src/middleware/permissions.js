@@ -1,23 +1,22 @@
-const { rule, shield, deny, allow, or } = require("graphql-shield");
+const { rule, shield, allow, or, not } = require("graphql-shield");
+const { Op } = require("sequelize");
 
 const isAuthenticated = rule()((parent, args, { user }) => {
   return user !== null;
 });
 
-const isAdmin = rule()((parent, args, { user, models }) => {
+const isAdmin = rule()((parent, args, { user }) => {
   return user.roles.some((role) => role == "Admin");
 });
-const isOperator = rule()((parent, args, { user, models }) => {
+const isOperator = rule()((parent, args, { user }) => {
   return user.roles.some((role) => role == "Operator");
 });
 
-const isCommentOwner = rule()((parent, args, { models, user }) => {
-  let comment = models.Comment.findOne({
-    where: {
-      UserId: user.id,
-    },
+const isCommentOwner = rule()(async (parent, { id }, { models, user }) => {
+  let comment = await models.Comment.findOne({
+    where: { id: id, UserId: user.id },
   });
-  return comment != null;
+  return comment == null;
 });
 
 const permissions = shield({
@@ -28,9 +27,9 @@ const permissions = shield({
 
   Mutation: {
     "*": isAuthenticated,
-    deleteComment: or(isAuthenticated, isOperator, isAdmin),
+    deleteComment: or(isAdmin, isCommentOwner),
     createOperator: isAdmin,
-    updateComment: or(isAdmin, isAuthenticated),
+    updateComment: not(isCommentOwner, new Error("You're not the author!")),
     suspendUser: or(isOperator, isAdmin),
     unSuspendUser: or(isOperator, isAdmin),
     createUser: allow,

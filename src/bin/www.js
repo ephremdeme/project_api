@@ -8,7 +8,6 @@ var debug = require("debug")("server:server");
 const { ApolloServer } = require("apollo-server-express");
 
 import { schema } from "../graphql/schema";
-import { authMiddleware } from "../middleware/authMiddleware";
 import { applyMiddleware } from "graphql-middleware";
 const { permissions } = require("../middleware/permissions");
 
@@ -21,7 +20,7 @@ const app = require("../app");
  * Alter tables and its constraints
  */
 
-models.sequelize.sync({ force: true });
+models.sequelize.sync({ alter: true });
 
 /**
  * Get port from environment and store in Express.
@@ -53,7 +52,7 @@ app.use(
 );
 
 const server = new ApolloServer({
-  schema: applyMiddleware(schema),
+  schema: applyMiddleware(schema, permissions),
   context: ({ req, res }) => {
     const user = req?.user?.user || null;
     return { user, models };

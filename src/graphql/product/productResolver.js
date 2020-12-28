@@ -252,10 +252,10 @@ export const resolvers = {
     async rating(product) {
       let data = {
         rating: await Rate.sum("rating", {
-          where: { productId: product.id },
+          where: { ProductId: product.id },
         }),
         count: await Rate.count({
-          where: { productId: product.id },
+          where: { ProductId: product.id },
         }),
       };
       data.rating = data.rating / data.count;

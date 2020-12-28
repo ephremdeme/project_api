@@ -21,7 +21,7 @@ const app = require("../app");
  * Alter tables and its constraints
  */
 
-models.sequelize.sync({ alter: true });
+models.sequelize.sync({ force: true });
 
 /**
  * Get port from environment and store in Express.
@@ -53,7 +53,7 @@ app.use(
 );
 
 const server = new ApolloServer({
-  schema: applyMiddleware(schema, permissions),
+  schema: applyMiddleware(schema),
   context: ({ req, res }) => {
     const user = req?.user?.user || null;
     return { user, models };

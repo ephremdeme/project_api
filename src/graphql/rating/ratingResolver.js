@@ -24,10 +24,10 @@ export const resolvers = {
       });
       let data = {
         rating: await models.Rate.sum("rating", {
-          where: { ProductId: ProductId, UserId: user.id },
+          where: { ProductId: ProductId },
         }),
         count: await models.Rate.count({
-          where: { [Op.and]: [{ ProductId: ProductId }, { UserId: user.id }] },
+         where: { ProductId: ProductId }
         }),
       };
       data.rating = data.rating / data.count;

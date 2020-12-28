@@ -146,6 +146,8 @@ export const resolvers = {
 
       const value = await bcrypt.compare(password, user.get().password);
       if (!value) return new Error("Invalid Credentials");
+      else if (!user.status)
+        return new Error("Your account has been suspended! Try agin later.");
       else {
         user.password = null;
         const { id } = user;

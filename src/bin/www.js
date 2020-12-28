@@ -18,19 +18,20 @@ const models = require("../models");
 const app = require("../app");
 
 /**
+ * Alter tables and its constraints
+ */
+
+models.sequelize.sync({ alter: true });
+
+/**
  * Get port from environment and store in Express.
  */
 
 var port = normalizePort(process.env.PORT || "5001");
-// app.set("port", port);
-
-// models.User.findAll({raw : true}).then(data=> console.log(data))
 
 /**
  * Create HTTP server.
  */
-
-models.sequelize.sync({ alter: true });
 
 // app.use(authMiddleware);
 
@@ -55,7 +56,6 @@ const server = new ApolloServer({
   schema: applyMiddleware(schema, permissions),
   context: ({ req, res }) => {
     const user = req?.user?.user || null;
-    console.log(req.user);
     return { user, models };
   },
   introspection: true,
@@ -69,7 +69,7 @@ server.applyMiddleware({ app });
  */
 
 app.listen(port, () =>
-  console.log(`🚀 Server ready on port : ${process.env.PORT}`)
+  console.log(`🚀 Server ready on port : ${process.env.PORT || 5001}`)
 );
 app.on("error", onError);
 app.on("listening", onListening);

@@ -23,6 +23,7 @@ const permissions = shield({
   Query: {
     getUser: isAuthenticated,
     users: isAuthenticated,
+    "*": allow,
   },
 
   Mutation: {

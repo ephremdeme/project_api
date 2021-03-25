@@ -27,14 +27,14 @@ const permissions = shield({
   },
 
   Mutation: {
-    "*": isAuthenticated,
+    createUser: allow,
+    login: allow,
     deleteComment: or(isAdmin, isCommentOwner),
     createOperator: isAdmin,
     updateComment: not(isCommentOwner, new Error("You're not the author!")),
     suspendUser: or(isOperator, isAdmin),
     unSuspendUser: or(isOperator, isAdmin),
-    createUser: allow,
-    login: allow,
+    "*": isAuthenticated,
   },
 });
 

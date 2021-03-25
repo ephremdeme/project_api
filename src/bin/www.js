@@ -43,6 +43,15 @@ app.use(function (err, req, res, next) {
   }
 });
 
+app.get("/about", (req, res) => {
+  res.send({
+    Author: "Ephrem Demelash",
+    Github: "github.com/ephremdeme",
+    Email: "demelashephrem@gmail.com",
+    LinkedIn: "linkedin.com/in/ephrem-demelash/",
+  });
+});
+
 app.use(
   expressJwt({
     secret: Buffer.from(process.env.ACESS_TOKEN_SECRET_KEY).toString("base64"),

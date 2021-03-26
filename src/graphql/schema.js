@@ -9,6 +9,7 @@ import { typeDefs as Image } from "./image/imageSchema";
 import { typeDefs as Profile } from "./profile/profileSchema";
 import { typeDefs as Wishlist } from "./wishlist/wishlistSchema";
 import { typeDefs as Order } from "./order/orderSchema";
+import { typeDefs as Contact } from "./contact/contactSchema";
 
 import { resolvers as commentResolver } from "./comment/commentResolver";
 import { resolvers as userResolver } from "./user/userResolver";
@@ -19,6 +20,7 @@ import { resolvers as imageResolver } from "./image/imageResolver";
 import { resolvers as profileResolver } from "./profile/profileResolver";
 import { resolvers as wishlistResolver } from "./wishlist/wishlistResolver";
 import { resolvers as orderResolver } from "./order/orderResolver";
+import { resolvers as contactResolver } from "./contact/contactResolver";
 
 const Query = `
   type Query {
@@ -51,6 +53,7 @@ export const schema = makeExecutableSchema({
     Rate,
     Category,
     Image,
+    Contact,
   ],
   resolvers: [
     resolvers,
@@ -62,6 +65,7 @@ export const schema = makeExecutableSchema({
     productResolver,
     rateResolver,
     categoryResolver,
+    contactResolver,
     imageResolver,
   ],
 });

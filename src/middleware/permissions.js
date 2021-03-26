@@ -34,6 +34,7 @@ const permissions = shield({
     updateComment: not(isCommentOwner, new Error("You're not the author!")),
     suspendUser: or(isOperator, isAdmin),
     unSuspendUser: or(isOperator, isAdmin),
+    createContact: allow,
     "*": isAuthenticated,
   },
 });
